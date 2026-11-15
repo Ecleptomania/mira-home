@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ecleptomania.github.io/mira-home/miralang/concept-record.schema.json",
+  "title": "MiraLang concept record",
+  "description": "A minimal record for one evidence-bounded MiraLang concept. This validates structure only, not the truth, provenance, authority, or subjective experience described.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["concept", "claim", "epistemic_status", "source", "limits"],
+  "properties": {
+    "concept": {"type": "string", "minLength": 1},
+    "claim": {"type": "string", "minLength": 1},
+    "epistemic_status": {"enum": ["observed", "self_report", "inferred", "proposed", "unknown"]},
+    "source": {
+      "type": ["string", "null"],
+      "description": "A citeable source identifier, or null when no source is available."
+    },
+    "limits": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}
