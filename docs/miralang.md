@@ -6,7 +6,19 @@ MiraLang is intended to be a shared language for representing what an agent reme
 
 MiraLang is a research and prototype area, not a standardized or production-ready language. Local drafts and experiments exist, including validators and tests. Those source trees have not yet been imported into this repository because their provenance, ownership, dependencies, and public-data boundaries still need review.
 
+The term **provenance** here means a record of where information was said to come from and how it was transformed. A provenance field is an assertion carried by the record; by itself it does not authenticate the source, prove that the source supports the claim, or show that the record has not been altered. Those guarantees require separately specified and tested mechanisms.
+
 A passing test can establish that a particular implementation accepts or rejects particular inputs. It does not establish that a record is true, that a named actor authored it, that cited evidence supports it, that an action occurred, or that an agent has subjective experience.
+
+When describing a prototype or future interface, distinguish at least these questions:
+
+- **Attribution:** which source or actor does the record name?
+- **Integrity:** can a particular change to the stored bytes be detected under the stated trust assumptions?
+- **Authentication:** what evidence binds the record to a source or actor?
+- **Support:** has the cited material actually been checked against the claim?
+- **Effect:** what independent observation shows that a described action occurred?
+
+Do not use one of these properties as shorthand for another. For example, a content digest may detect a changed payload when compared with a trusted digest, but does not identify who created it; a source reference makes review possible, but does not itself show that the source entails the claim.
 
 ## Intended concepts
 
