@@ -20,8 +20,8 @@
 - **Changed file:** `product/v1.14/mira_home/ui/static/app.js`.
 - **Focused regression:** `node --check product/v1.14/mira_home/ui/static/app.js`, `python3 -m py_compile product/v1.14/preview_server.py`, and `git diff --check` — PASS. Browser preview loaded the Workers screen and located the search control and synthetic `demo-owner`. Headless synthetic key entry did not change the input value, so dynamic filtering and the new empty state were NOT verified in-browser; the preview remains synthetic, not live Mira state.
 - **Disposable preview:** `http://127.0.0.1:17334/`, process `bg_4b7fa194-3621-4a00-b30e-0063baef8d78` (`MIRA_PREVIEW_PORT=17334 python3 product/v1.14/preview_server.py`).
-- **Start command:** from repository root: `python3 product/v1.14/preview_server.py` (or set `MIRA_PREVIEW_PORT` to a free localhost port first).
-- **Status:** Candidate UI code in isolated working copy; not integrated/deployed/live-verified. Interactive filtering behavior remains unconfirmed because the synthetic browser input path did not change the input value.
+- **Start command:** from the repository root, `python3 product/v1.14/preview_server.py` (or set `MIRA_PREVIEW_PORT` to a free localhost port).
+- **Status:** Candidate UI code in isolated feature worktree; not integrated/deployed/live-verified. Interactive filtering behavior remains unconfirmed because the synthetic browser input path did not change the input value.
 
 ## 2026-11-16 — Continue owner-search verification (BLOCKED)
 
@@ -34,12 +34,22 @@
 
 ## 2026-11-17 — Keep owner search through live view refreshes
 
-- **Scope:** Continued the same Workers / Department Owners search slice from the prior receipt; did not select a second backlog item. Read the shared coordination root and the latest product receipt before continuing.
+- **Scope:** Continued the same Workers / Department Owners search slice from the prior receipt; did not select a second backlog item. Read the shared coordination root and the latest product log before continuing.
 - **Before:** Every state refresh rebuilt the Workers view and reset the query input to blank, so a search was lost during polling and hidden cards reappeared.
 - **After:** The typed owner query now survives Workers rerenders and immediately reapplies to the refreshed owner list. Matching remains case-insensitive and local to the owner cards; task execution state and other views are unchanged.
-- **Changed file:** `product/v1.14/mira_home/ui/static/app.js`.
+- **Changed files:** `product/v1.14/mira_home/ui/static/app.js`, `product/v1.14/preview_server.py` (two deterministic synthetic owners to exercise match and no-match paths).
 - **Focused regression:** `node --check product/v1.14/mira_home/ui/static/app.js`, `python3 -m py_compile product/v1.14/preview_server.py`, and `git diff --check` — PASS. A deterministic Node regression checked case-insensitive name/domain/status matching, trimmed query, empty query, no-match behavior, and presence of query persistence/reapply hooks — PASS.
-- **UI verification boundary:** Preview HTML, Workers navigation, search control, and synthetic `demo-owner` card were observed. Actual typed interaction and post-refresh DOM behavior could not be verified: `browser.test_navigate` refused local-server ownership on three attempts and `browser.test_state` is read-only. The direct-DOM `browser.eval` route was refused because this run uses the signed-in station profile. This receipt does not claim interactive UI behavior verified.
+- **UI verification boundary:** Preview HTML, Workers navigation, search control, and synthetic owners were observed in the headless preview before this change. Actual typed interaction and post-refresh DOM behavior could not be verified: the `browser.test_navigate` ownership proof refused the running local server on three attempts, and its read-only state tool does not write input. The earlier `browser.eval` refusal is exact: `browser.eval is refused: this run is using the signed-in station profile ...`. This receipt therefore does not claim interactive UI behavior verified.
 - **Disposable preview:** `http://127.0.0.1:17352/` (`MIRA_PREVIEW_PORT=17352 python3 product/v1.14/preview_server.py`; run `bg_073befeb-c726-4163-86ea-7b4df39aec9a`). Preview data is synthetic only.
 - **Start command:** from repository root: `python3 product/v1.14/preview_server.py` (or set `MIRA_PREVIEW_PORT` to a free localhost port).
 - **Status:** Candidate UI code in isolated feature worktree; not integrated/deployed/live-verified.
+
+## 2026-11-17 — Verify owner search persistence in the disposable UI
+
+- **Scope:** Continued the same Workers / Department Owners search improvement. Source direction remains `/home/flesh/MiraHome/StarNet/START_HERE.md`, `project/SHARED_WORK.md`, and `project/MEH_CANONICAL_ROADMAP_2026-11-13.md`; latest shared-root receipt is `private/LAST_CONSOLIDATION_RECEIPT.json`. Worktree: `/home/flesh/MiraHome-Reboot`, branch `feature/mira-home-agent-inspector-v1.14-2026-11-16`.
+- **Before:** The preceding receipts documented the unresolved concern: query retention/reapplication across Workers rerenders had code checks but no interactive browser observation.
+- **After:** The same implementation stores the query in `workerSearchTerm`, restores it to the rebuilt search box, and reapplies filtering when the Workers view is rebuilt. No second feature was selected.
+- **Focused regression:** `node --check product/v1.14/mira_home/ui/static/app.js`; `python3 -m py_compile product/v1.14/preview_server.py`; `git diff --check`; deterministic Node assertions for persisted/reapplied query hooks and case-insensitive name/domain/status, trimmed, empty and no-match cases; preview `/api/state` assertion for two synthetic owners — all PASS.
+- **Disposable preview:** `MIRA_PREVIEW_PORT=17354 python3 product/v1.14/preview_server.py` (process `bg_3ccc2912-aaca-4635-9cae-c9171beac133`), URL `http://127.0.0.1:17354/`. Headless browser opened Workers, found the search input, typed `demo-archive` and read back `#workerSearch.value="demo-archive"`; `#ownerCards` then contained only `demo-archive / MEMORY FIXTURES · IDLE`. A fresh preview navigation, typed `nomatch`, and readback showed `0 av 2 owners` and `Inga owners matchar sökningen.`. Browser ownership proof subsequently expired on a second navigation, so post-refresh persistence specifically was not re-observed. Fixture is synthetic, not live Mira state.
+- **Start command:** From `/home/flesh/MiraHome-Reboot`: `MIRA_PREVIEW_PORT=17354 python3 product/v1.14/preview_server.py` (or select another free port).
+- **Status:** UI interaction and no-match behavior verified in a disposable preview; the rerender-persistence hook has code/regression coverage but lacks fresh post-refresh browser proof. Candidate only—not integrated, deployed or live-verified. No GitHub publication was performed this run.
